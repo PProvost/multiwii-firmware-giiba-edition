@@ -1601,6 +1601,32 @@
   #undef INTERNAL_I2C_PULLUPS
 #endif
 
+#if defined(HK_MICRO_MWC)
+  #define MPU6050  /*Choose one orientation:*/
+    /***** Tail Lights Orientation *****/
+      #define ACC_ORIENTATION(X, Y, Z) {imu.accADC[ROLL] = X;imu.accADC[PITCH] = Y;imu.accADC[YAW] = Z;}
+      #define GYRO_ORIENTATION(X, Y, Z){imu.gyroADC[ROLL] = -Y; imu.gyroADC[PITCH] = X; imu.gyroADC[YAW] = -Z;}
+    /***** Headlights Orientation *****/
+      //#define ACC_ORIENTATION(X, Y, Z) {imu.accADC[ROLL] = -X;imu.accADC[PITCH] = -Y;imu.accADC[YAW] = Z;}
+      //#define GYRO_ORIENTATION(X, Y, Z){imu.gyroADC[ROLL] = Y; imu.gyroADC[PITCH] = -X; imu.gyroADC[YAW] = -Z;}
+  #define MPU6050_LPF_42HZ
+
+  #define MINTHROTTLE 1050
+  #define MAXTHROTTLE 2020
+  #define EXT_MOTOR_32KHZ
+  #define MOTOR_STOP
+
+  #define SERIAL_SUM_PPM PITCH,YAW,THROTTLE,ROLL,AUX1,AUX2  //,AUX3,AUX4,8,9,10,11
+
+  #define VBAT
+  #define V_BATPIN           A2
+  #define VBATSCALE          50   // 53=4.70v or 50=5.00v?
+  #define VBATNOMINAL        42
+  #define VBATLEVEL_WARN1    33
+  #define VBATLEVEL_WARN2    32
+  #define VBATLEVEL_CRIT     31
+#endif
+
 /**************************************************************************************/
 /***************              Sensor Type definitions              ********************/
 /**************************************************************************************/
