@@ -57,6 +57,14 @@
     #define THROTTLE_BOOST
 
 
+  /***  Low Battery Flasher  *********************************/
+  /*  Flashes primary LED (armed indicator)  */
+  /*  when battery reaches set thresholds    */
+  /*  see ln524-37 in MultiWii.cpp           */
+
+    #define BATTFLASH
+
+
 /*************************************************************************************************/
 /*****************                                                                 ***************/
 /****************  SECTION  1 - BASIC SETUP                                                *******/

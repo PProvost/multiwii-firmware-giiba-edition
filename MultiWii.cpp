@@ -514,7 +514,20 @@ void annexCode() { // this code is excetuted at each loop and won't interfere wi
     LEDPIN_TOGGLE;
   } else {
     if (f.ACC_CALIBRATED) {LEDPIN_OFF;}
-    if (f.ARMED) {LEDPIN_ON;}
+    if (f.ARMED) {
+      #if defined(BATTFLASH)
+        if ((analog.vbat > conf.vbatlevel_warn1)) { LEDPIN_ON; }
+        else { 
+          static unsigned long lblink = millis()+333;
+          if(millis()>=lblink){
+            LEDPIN_TOGGLE;
+            lblink = millis()+333;
+            }
+          }
+      #else
+        LEDPIN_ON;
+      #endif
+      }
   }
 
   #if defined(LED_RING)
