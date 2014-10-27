@@ -404,6 +404,10 @@ void annexCode() { // this code is excetuted at each loop and won't interfere wi
   tmp2 = tmp/256; // range [0;9]
   rcCommand[THROTTLE] = lookupThrottleRC[tmp2] + (tmp-tmp2*256) * (lookupThrottleRC[tmp2+1]-lookupThrottleRC[tmp2]) / 256; // [0;2559] -> expo -> [conf.minthrottle;MAXTHROTTLE]
 
+  #if defined(THROTTLE_BOOST)      
+    rcCommand[THROTTLE] += (rcCommand[THROTTLE]>>3) - 137;
+  #endif
+
   #if defined(HEADFREE)
     if(f.HEADFREE_MODE) { //to optimize
       float radDiff = (att.heading - headFreeModeHold) * 0.0174533f; // where PI/180 ~= 0.0174533

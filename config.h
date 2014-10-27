@@ -51,6 +51,12 @@
     #define SCALE 1.48    //  1 = no scaling
 
 
+  /***  Throttle Boost - boost throttle 12%  *****************/
+  /*  see ln414-6 in MultiWii.cpp            */
+
+    #define THROTTLE_BOOST
+
+
 /*************************************************************************************************/
 /*****************                                                                 ***************/
 /****************  SECTION  1 - BASIC SETUP                                                *******/
