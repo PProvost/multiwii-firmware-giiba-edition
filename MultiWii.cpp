@@ -25,6 +25,7 @@ November  2013     V2.3
 #include "Serial.h"
 #include "GPS.h"
 #include "Protocol.h"
+#include "G_Tune.h"
 
 #include <avr/pgmspace.h>
 
@@ -96,6 +97,9 @@ const char boxnames[] PROGMEM = // names for dynamic generation of config GUI
   "MISSION;"
   "LAND;"
 #endif
+#ifdef G_TUNE
+  "G_TUNE;"
+#endif
   ;
 
 const uint8_t boxids[] PROGMEM = {// permanent IDs associated to boxes. This way, you can rely on an ID number to identify a BOX function.
@@ -150,6 +154,9 @@ const uint8_t boxids[] PROGMEM = {// permanent IDs associated to boxes. This way
 #if GPS
   20, //"MISSION;"
   21, //"LAND;"
+#endif
+#ifdef G_TUNE
+  22,
 #endif
   };
 
@@ -1217,6 +1224,27 @@ void loop () {
       else {f.PASSTHRU_MODE = 0;}
     #endif
  
+    #if defined (G_TUNE)
+      if (rcOptions[BOXGTUNE])
+      {
+        if (f.GTUNE ==0)
+        {
+            f.GTUNE =1;
+            init_ZEROPID();
+            
+            errorGyroI[YAW]=0;
+        }
+      }
+      else
+      {
+        if (f.GTUNE ==1)
+        {
+            save_ZEROPID();
+            f.GTUNE =0;
+        }
+      }
+    #endif
+ 
   } else { // not in rc loop
     static uint8_t taskOrder=0; // never call all functions in the same loop, to avoid high delay spikes
     switch (taskOrder) {
@@ -1408,6 +1436,54 @@ void loop () {
     DTerm = mul(DTerm,dynD8[axis])>>5;        // 32 bits is needed for calculation
 
     axisPID[axis] =  PTerm + ITerm - DTerm;
+
+#if defined (G_TUNE)
+    if((f.GTUNE) && f.ARMED)
+    {
+        calculate_ZEROPID (axis, imu.gyroData[axis]); //error);
+/*  */
+      debug[0]= rc;
+      debug[1]= abs(error) ;
+
+      int16_t diff_P = (int16_t)(abs(error) - abs(OldError[0][i])); 
+      int16_t diff_I = (int16_t)(abs(error) - abs(OldError[1][i])); 
+      
+      if (diff_P > 1)
+      {
+        if (conf.pid[axis].P8 < 100) conf.pid[axis].P8 +=1;
+      }
+       if (diff_P < -1)
+      {
+        if ( conf.pid[axis].P8 > 0)	conf.pid[axis].P8 -=1;
+      }
+      
+      if (diff_I > 1)
+      {
+        if (conf.pid[axis].I8 < 100) conf.pid[axis].I8 +=1;
+      }
+       if (diff_I < -1)
+      {
+        if ( conf.pid[axis].I8 > 0)	conf.pid[axis].I8 -=1;
+      }
+      
+
+      //if ((abs(rc) < 50) && (rcCommand[THROTTLE] > MINTHROTTLE + 250))
+      if ((abs(error) < 50) && (rcCommand[THROTTLE] > MINTHROTTLE + 250))
+      {
+        AvgPID[axis].P8 = (AvgPID[axis].P8 + conf.pid[axis].P8) / 2;
+        AvgPID[axis].I8 = (AvgPID[axis].I8 + conf.pid[axis].I8) / 2;
+      }
+       debug[2] = diff_P;
+       debug[3] = conf.pid[1].P8;
+
+     OldError[0][i] = ( 3 * OldError[0][i] + (int16_t)abs(error)) / 4;
+     OldError[1][i] = ( 19 * OldError[1][i] + (int16_t)abs(error)) / 20;
+     
+/*  */ 
+   } 
+  
+ 
+#endif
   }
 
   //YAW
@@ -1430,6 +1506,46 @@ void loop () {
   ITerm = constrain((int16_t)(errorGyroI_YAW>>13),-GYRO_I_MAX,+GYRO_I_MAX);
   
   axisPID[YAW] =  PTerm + ITerm;
+
+  #if defined (G_TUNE)
+    if((f.GTUNE) && f.ARMED)
+      {
+      calculate_ZEROPID (YAW,error);
+/*  */
+      int16_t diff_P = (int16_t)(abs(error) - abs(OldError[0][YAW])); 
+      int16_t diff_I = (int16_t)(abs(error) - abs(OldError[1][YAW])); 
+      
+      if (diff_P > 1)
+      {
+        if (conf.pid[YAW].P8 < 100) conf.pid[YAW].P8 +=1;
+      }
+       if (diff_P < -1)
+      {
+        if (conf.pid[YAW].P8 > 0)	conf.pid[YAW].P8 -=1;
+      }
+     
+      
+      if (diff_I > 1)
+      {
+        if (conf.pid[YAW].I8 < 100) conf.pid[YAW].I8 +=1;
+      }
+       if (diff_I < -1)
+      {
+        if (conf.pid[YAW].I8 > 0)	conf.pid[YAW].I8 -=1;
+      }
+      
+      //if ((abs(rc) < 50) && (rcCommand[THROTTLE] > MINTHROTTLE + 250))
+      if ((abs(error) < 50) && (rcCommand[THROTTLE] > MINTHROTTLE + 250))
+      {
+        AvgPID[YAW].P8 = (AvgPID[YAW].P8 + conf.pid[YAW].P8) / 2;
+        AvgPID[YAW].I8 = (AvgPID[YAW].I8 + conf.pid[YAW].I8) / 2;
+      }
+      
+      OldError[0][YAW] = (3 * OldError[0][YAW] + (int16_t)abs(error)) / 4;
+      OldError[1][YAW] = (19 * OldError[1][YAW] + (int16_t)abs(error)) / 20;
+  /*  */
+  }
+  #endif
   
   #elif PID_CONTROLLER == 2 // alexK
   #define GYRO_I_MAX 256

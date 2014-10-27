@@ -65,6 +65,14 @@
     #define BATTFLASH
 
 
+  /***  G_TUNE  **********************************************/
+  /*  experimental auto PID setting          */
+  //see: http://technicaladventure.blogspot.ca/2014/06/zero-pids-tuner-for-multirotors.html
+  /*  code scattered throughout              */
+
+    #define G_TUNE
+
+
 /*************************************************************************************************/
 /*****************                                                                 ***************/
 /****************  SECTION  1 - BASIC SETUP                                                *******/

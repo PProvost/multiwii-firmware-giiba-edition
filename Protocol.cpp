@@ -451,6 +451,9 @@ void evaluateCommand() {
       #if defined(OSD_SWITCH)
         if(rcOptions[BOXOSD]) tmp |= 1<<BOXOSD;
       #endif
+      #if defined (G_TUNE)
+        if(f.GTUNE)   tmp |= 1<<BOXGTUNE;
+      #endif
       if(f.ARMED) tmp |= 1<<BOXARM;
       st.flag             = tmp;
       st.set              = global_conf.currentSet;

@@ -83,6 +83,9 @@ enum box {
     BOXGPSNAV,
     BOXLAND,
   #endif
+  #ifdef G_TUNE
+    BOXGTUNE,
+  #endif
   CHECKBOXITEMS
 };
 
@@ -133,6 +136,7 @@ typedef struct {
   uint8_t GPS_BARO_MODE : 1;         // This flag is used when GPS controls baro mode instead of user (it will replace rcOptions[BARO]
   uint8_t LAND_COMPLETED: 1;
   uint8_t LAND_IN_PROGRESS: 1;
+  uint8_t GTUNE:1;
 } flags_struct_t;
 
 typedef struct {
