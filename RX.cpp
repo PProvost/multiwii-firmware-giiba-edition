@@ -469,7 +469,11 @@ void computeRC() {
     rc4ValuesIndex++;
     if (rc4ValuesIndex == AVERAGING_ARRAY_LENGTH-1) rc4ValuesIndex = 0;
     for (chan = 0; chan < RC_CHANS; chan++) {
+      #if defined(STICK_SCALING)
+        rcDataTmp = ((int16_t)readRawRC(chan)-MIDRC)*SCALE+MIDRC; //to modify range, modify "30/20": increase top number to increase signal range, decrease to decrease
+      #else
       rcDataTmp = readRawRC(chan);
+      #endif
       #if defined(FAILSAFE)
         failsafeGoodCondition = rcDataTmp>FAILSAFE_DETECT_TRESHOLD || chan > 3 || !f.ARMED; // update controls channel only if pulse is above FAILSAFE_DETECT_TRESHOLD
       #endif                                                                                // In disarmed state allow always update for easer configuration.

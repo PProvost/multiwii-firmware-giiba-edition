@@ -39,6 +39,18 @@
                           //       default->tail-lights    */
 
 
+  /***  Input Scaling:  **************************************/
+  /*  A fix for the reciever on the Micro    */
+  /*  MWC board, where the output is only    */
+  /*  1130-1870us. Adds scaling to           */
+  /*  'readRawRC' in Rx.cpp to get a 1000-   */
+  /*  2000us readout in GUI                  */
+  /***********  see ln472-6 in Rx.cpp        */
+
+    #define STICK_SCALING
+    #define SCALE 1.48    //  1 = no scaling
+
+
 /*************************************************************************************************/
 /*****************                                                                 ***************/
 /****************  SECTION  1 - BASIC SETUP                                                *******/
