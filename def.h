@@ -1604,11 +1604,11 @@
 #if defined(HK_MICRO_MWC)
   #define MPU6050  /*Choose one orientation:*/
     /***** Tail Lights Orientation *****/
-      #define ACC_ORIENTATION(X, Y, Z) {imu.accADC[ROLL] = X;imu.accADC[PITCH] = Y;imu.accADC[YAW] = Z;}
-      #define GYRO_ORIENTATION(X, Y, Z){imu.gyroADC[ROLL] = -Y; imu.gyroADC[PITCH] = X; imu.gyroADC[YAW] = -Z;}
+      //#define ACC_ORIENTATION(X, Y, Z) {imu.accADC[ROLL] = X;imu.accADC[PITCH] = Y;imu.accADC[YAW] = Z;}
+      //#define GYRO_ORIENTATION(X, Y, Z){imu.gyroADC[ROLL] = -Y; imu.gyroADC[PITCH] = X; imu.gyroADC[YAW] = -Z;}
     /***** Headlights Orientation *****/
-      //#define ACC_ORIENTATION(X, Y, Z) {imu.accADC[ROLL] = -X;imu.accADC[PITCH] = -Y;imu.accADC[YAW] = Z;}
-      //#define GYRO_ORIENTATION(X, Y, Z){imu.gyroADC[ROLL] = Y; imu.gyroADC[PITCH] = -X; imu.gyroADC[YAW] = -Z;}
+      #define ACC_ORIENTATION(X, Y, Z) {imu.accADC[ROLL] = -X;imu.accADC[PITCH] = -Y;imu.accADC[YAW] = Z;}
+      #define GYRO_ORIENTATION(X, Y, Z){imu.gyroADC[ROLL] = Y; imu.gyroADC[PITCH] = -X; imu.gyroADC[YAW] = -Z;}
   #define MPU6050_LPF_42HZ
 
   #define MINTHROTTLE 1050
